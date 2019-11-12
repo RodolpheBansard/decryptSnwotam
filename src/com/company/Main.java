@@ -36,13 +36,16 @@ public class Main {
                     System.out.println(dateHour);
                     break;
                 case 'C':
-
+                    String runwayDesignator = getRunwayDesignator(pair.getValue().toString().replace(" ",""));
+                    System.out.println(runwayDesignator);
                     break;
                 case 'D':
-
+                    String clearedRunwayLength = getClearedRunwayLength(pair.getValue().toString().replace(" ",""));
+                    System.out.println(clearedRunwayLength);
                     break;
                 case 'E':
-
+                    String clearedRunwayWidth = getClearedRunwayWidth(pair.getValue().toString().replace(" ",""));
+                    System.out.println(clearedRunwayWidth);
                     break;
                 case 'F':
 
@@ -188,6 +191,29 @@ public class Main {
         return day + " " + month + " " + heure;
     }
 
+    public static String getRunwayDesignator(String data){
+        return "RUNWAY " + data;
+    }
 
+    public static String getClearedRunwayLength(String data){
+        return "CLEARED RUNWAY LENGTH " + data + "M";
+    }
+
+    public static String getClearedRunwayWidth(String data){
+        String width;
+
+        if(data.length() == 1)
+           width = data;
+        else
+            width = data.substring(0,data.length()-1);
+
+        if(data.charAt(data.length()-1) == 'R')
+            return "CLEARED RUNWAY WIDTH " + width + "M RIGHT";
+        else if(data.charAt(data.length()-1) == 'L')
+            return "CLEARED RUNWAY WIDTH " + width + "M LEFT";
+        else{
+            return "CLEARED RUNWAY WIDTH " + width + "M";
+        }
+    }
 
 }
