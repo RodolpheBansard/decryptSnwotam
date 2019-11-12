@@ -13,7 +13,7 @@ public class Main {
                 "(SNOWTAM 0311\n" +
                 "A) ENSB\n" +
                 "B) 10130958 C) 10\n" +
-                "F) 7/7/7 G) XX/XX/XX H) 4/4/3\n" +
+                "F) 7/7/7 G) XX/XX/XX H) 40/1/35 SKL\n" +
                 "N) ALL REPORTED TWYS/2\n" +
                 "R) ALL REPORTED APRONS/2\n" +
                 "T) CONTAMINATION/100/100/100/PERCENT.\n" +
@@ -48,13 +48,16 @@ public class Main {
                     System.out.println(clearedRunwayWidth);
                     break;
                 case 'F':
-
+                    String depositsOverTotalRunwayLength = getDepositsOverTotalRunwayLength(pair.getValue().toString().replace(" ",""));
+                    System.out.println(depositsOverTotalRunwayLength);
                     break;
                 case 'G':
-
+                    String meanDepthDeposit = getMeanDepthDeposit(pair.getValue().toString().replace(" ",""));
+                    System.out.println(meanDepthDeposit);
                     break;
                 case 'H':
-
+                    String frictionMeasurements = getFrictionMeasurements(pair.getValue().toString().replace(" ",""));
+                    System.out.println(frictionMeasurements);
                     break;
                 case 'I':
 
@@ -120,7 +123,6 @@ public class Main {
         return dictionnary;
     }
 
-
     public static String getAirportName(String OACI) throws IOException {
         File file = new File("D:\\Repos\\5A\\Android\\decryptSnowtam\\src\\com\\company\\OACI codes");
 
@@ -140,53 +142,14 @@ public class Main {
         return "can't find airport";
     }
 
-
     public static String getDateHour(String data){
+        String[] months = {"January","February","March","April","May","June","July","August","September","October","November","December"};
         String day = data.substring(2,4);
         String month = "";
         String heure = data.substring(4,6) + "h" + data.substring(6,8) + " UTC";
 
-        switch(data.substring(0,2))
-        {
-            case "01":
-                month = "January";
-                break;
-            case "02":
-                month = "February";
-                break;
-            case "03":
-                month = "March";
-                break;
-            case "04":
-                month = "April";
-                break;
-            case "05":
-                month = "May";
-                break;
-            case "06":
-                month = "June";
-                break;
-            case "07":
-                month = "July";
-                break;
-            case "08":
-                month = "August";
-                break;
-            case "09":
-                month = "September";
-                break;
-            case "10":
-                month = "October";
-                break;
-            case "11":
-                month = "November";
-                break;
-            case "12":
-                month = "December";
-                break;
-            default:
-                month = "error";
-        }
+        int index = Integer.parseInt(data.substring(0,2));
+        month = months[index-1];
 
         return day + " " + month + " " + heure;
     }
@@ -216,4 +179,59 @@ public class Main {
         }
     }
 
+    public static String getDepositsOverTotalRunwayLength(String data){
+        String[] weathers = {"CLEAR AND DRY","DAMP","WATER PATCHES","RIME OR FROST COVERED","DRY SNOW","WET SNOW","SLUSH","ICE","COMPACTED OR ROLLED SNOW","FROZEN RUTS OR RIDGES"};
+        String[] tab = data.split("/");
+        int[] indexes = {Integer.parseInt(tab[0]),Integer.parseInt(tab[1]),Integer.parseInt(tab[2])};
+
+        return "Threshold: " + weathers[indexes[0]] + " / Mid runway: " + weathers[indexes[1]] + " / Roll out: " + weathers[indexes[2]] ;
+    }
+
+    public static String getMeanDepthDeposit(String data){
+        String[] tab = data.split("/");
+
+        for(int i=0; i<3 ; i++){
+            if(tab[i].equals("XX")){
+                tab[i] = "not significant";
+            }
+            else{
+                tab[i] += "mm";
+            }
+        }
+        return "MEAN DEPTH Threshold: " + tab[0] + " / Mid runway: " + tab[1] + " / Roll out: " + tab[2];
+    }
+
+    public static String getFrictionMeasurements(String data){
+        String[] instrumentsAbbreviation = {"BRD","GRT","MUM","RFT","SFH","SFL","SKH","SKL","TAP"};
+        String[] instruments = {"Brakemeter-Dynometer","Grip tester","Mu-meter","Runway frition tester","Surface friction tester (high-pressure tire)","Surface friction tester (low-pressure tire)","Skiddometer (high-pressure tire)","Skiddometer (low-pressure tire)","Tapley meter"};
+
+        String instrument = "";
+        for(int i=0; i<instruments.length; i++){
+            if(instrumentsAbbreviation[i].equals(data.substring(data.length()-3,data.length()))){
+                instrument = instruments[i];
+                break;
+            }
+        }
+
+        String[] numbers = data.substring(0,data.length()-3).split("/");
+
+        for(int i=0; i<numbers.length ;i++){
+            int number = Integer.parseInt(numbers[i]);
+            if(number >= 40 || number == 5)
+                numbers[i] = "GOOD";
+            else if((number <= 39 && number >= 36) || number == 4)
+                numbers[i] = "MEDIUM TO GOOD";
+            else if((number <= 35 && number >= 30) || number == 3)
+                numbers[i] = "MEDIUM";
+            else if((number <= 29 && number >= 26) || number == 2)
+                numbers[i] = "MEDIUM TO POOR";
+            else if((number <= 25 && number >= 10) || number == 1)
+                numbers[i] = "POOR";
+            else if(number == 9){
+                numbers[i] = "impossible to measure";
+            }
+        }
+
+        return "BRAKING ACTION Threshold: " + numbers[0] + " / Mid runway: " + numbers[1] + " / Roll Out: " + numbers[2] + " Instrument: " + instrument;
+    }
 }
