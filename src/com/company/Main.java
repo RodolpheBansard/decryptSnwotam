@@ -12,8 +12,8 @@ public class Main {
         String snowtam = "SWEN0311 ENSB 10130958\n" +
                 "(SNOWTAM 0311\n" +
                 "A) ENSB\n" +
-                "B) 10130958 C) 10\n" + "M)1345" +
-                "F) 7/7/7 G) XX/XX/XX H) 40/1/35 SKL\n" +
+                "B) 10130958 C) 10\n" +
+                "F) 7/7/7 G) XX/XX/XX H) 4/4/3\n" +
                 "N) ALL REPORTED TWYS/2\n" +
                 "R) ALL REPORTED APRONS/2\n" +
                 "T) CONTAMINATION/100/100/100/PERCENT.\n" +
@@ -27,71 +27,89 @@ public class Main {
             Map.Entry pair = (Map.Entry) it.next();
             switch(pair.getKey().toString().charAt(0)){
                 case 'A':
-
+                    System.out.print(pair.getKey().toString() + "  ");
                     String airportName = getAirportName(pair.getValue().toString().replace(" ",""));
                     System.out.println(airportName);
                     break;
                 case 'B':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String dateHour = getDateHour(pair.getValue().toString().replace(" ",""));
                     System.out.println(dateHour);
                     break;
                 case 'C':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String runwayDesignator = getRunwayDesignator(pair.getValue().toString().replace(" ",""));
                     System.out.println(runwayDesignator);
                     break;
                 case 'D':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String clearedRunwayLength = getClearedRunwayLength(pair.getValue().toString().replace(" ",""));
                     System.out.println(clearedRunwayLength);
                     break;
                 case 'E':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String clearedRunwayWidth = getClearedRunwayWidth(pair.getValue().toString().replace(" ",""));
                     System.out.println(clearedRunwayWidth);
                     break;
                 case 'F':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String depositsOverTotalRunwayLength = getDepositsOverTotalRunwayLength(pair.getValue().toString().replace(" ",""));
                     System.out.println(depositsOverTotalRunwayLength);
                     break;
                 case 'G':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String meanDepthDeposit = getMeanDepthDeposit(pair.getValue().toString().replace(" ",""));
                     System.out.println(meanDepthDeposit);
                     break;
                 case 'H':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String frictionMeasurements = getFrictionMeasurements(pair.getValue().toString().replace(" ",""));
                     System.out.println(frictionMeasurements);
                     break;
                 case 'J':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String criticalSnowbanks = getCriticalSnowbanks(pair.getValue().toString().replace(" ",""));
                     System.out.println(criticalSnowbanks);
                     break;
                 case 'K':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String runwayLight = getRunwayLight(pair.getValue().toString().replace(" ",""));
                     System.out.println(runwayLight);
                     break;
                 case 'L':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String furtherClearance = getFurtherClearance(pair.getValue().toString().replace(" ",""));
                     System.out.println(furtherClearance);
                     break;
                 case 'M':
+                    System.out.print(pair.getKey().toString() + "  ");
                     String furtherClearanceCompletionTime = getFurtherClearanceCompletionTime(pair.getValue().toString().replace(" ",""));
                     System.out.println(furtherClearanceCompletionTime);
                     break;
                 case 'N':
-
+                    System.out.print(pair.getKey().toString() + "  ");
+                    String taxiway = getTaxiway(pair.getValue().toString().replace(" ",""));
+                    System.out.println(taxiway);
                     break;
-                case 'O':
-
-                    break;
-                case 'Q':
-
+                case 'P':
+                    System.out.print(pair.getKey().toString() + "  ");
+                    String taxiwaySnowbanks = getTaxiwaySnowbanks(pair.getValue().toString().replace(" ",""));
+                    System.out.println(taxiwaySnowbanks);
                     break;
                 case 'R':
-
+                    System.out.print(pair.getKey().toString() + "  ");
+                    String apron = getApron(pair.getValue().toString().replace(" ",""));
+                    System.out.println(apron);
                     break;
                 case 'S':
-
+                    System.out.print(pair.getKey().toString() + "  ");
+                    String nextPlannedMeasurementTime = getNextPlannedMeasurementTime(pair.getValue().toString().replace(" ",""));
+                    System.out.println(nextPlannedMeasurementTime);
                     break;
                 case 'T':
-
+                    System.out.print(pair.getKey().toString() + "  ");
+                    String plainLanguageRemarks = getPlainLanguageRemarks(pair.getValue().toString().replace(" ",""));
+                    System.out.println(plainLanguageRemarks);
                     break;
                 default:
 
@@ -127,8 +145,8 @@ public class Main {
         return dictionnary;
     }
 
-    public static String getAirportName(String OACI) throws IOException {
-        File file = new File("D:\\Repos\\5A\\Android\\decryptSnowtam\\src\\com\\company\\OACI codes");
+    public static String getAirportName(String data) throws IOException {
+        File file = new File("U:\\Repos\\5A\\Android\\decryptSnwotam\\src\\com\\company\\OACI codes");
 
         BufferedReader br = new BufferedReader(new FileReader(file));
 
@@ -137,7 +155,7 @@ public class Main {
             String[] liste = st.split(",");
             for(String element : liste){
                 if(element.length() == 6){
-                    if(element.equals("\"" + OACI + "\"")){
+                    if(element.equals("\"" + data + "\"")){
                         return liste[1].replace("\"","");
                     }
                 }
@@ -216,8 +234,15 @@ public class Main {
                 break;
             }
         }
+        String[] numbers;
+        if(instrument.equals("")){
+            numbers = data.substring(0,data.length()).split("/");
+            instrument = "¯\\_(ツ)_/¯";
+        }
+        else{
+            numbers = data.substring(0,data.length()-3).split("/");
+        }
 
-        String[] numbers = data.substring(0,data.length()-3).split("/");
 
         for(int i=0; i<numbers.length ;i++){
             int number = Integer.parseInt(numbers[i]);
@@ -293,5 +318,26 @@ public class Main {
         String mm = data.substring(2,4);
 
         return "Anticipated time of completion " + hh + "h" + mm + " UTC";
+    }
+
+    public static String getTaxiway(String data){
+        return data;
+    }
+
+    public static String getTaxiwaySnowbanks(String data){
+        String distance  = data.substring(3,data.length());
+        return "SNOW BANKS: YES SPACE " + distance + "m";
+    }
+
+    public static String getApron(String data){
+        return data;
+    }
+
+    public static String getNextPlannedMeasurementTime(String data){
+        return "NEXT OBSERVATION " + getDateHour(data);
+    }
+
+    public static String getPlainLanguageRemarks(String data){
+        return data;
     }
 }
