@@ -146,7 +146,7 @@ public class Main {
     }
 
     public static String getAirportName(String data) throws IOException {
-        File file = new File("U:\\Repos\\5A\\Android\\decryptSnwotam\\src\\com\\company\\OACI codes");
+        File file = new File("D:\\Repos\\5A\\Android\\decryptSnowtam\\src\\com\\company\\OACI codes");
 
         BufferedReader br = new BufferedReader(new FileReader(file));
 
