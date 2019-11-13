@@ -12,7 +12,7 @@ public class Main {
         String snowtam = "SWEN0311 ENSB 10130958\n" +
                 "(SNOWTAM 0311\n" +
                 "A) ENSB\n" +
-                "B) 10130958 C) 10\n" +
+                "B) 10130958 C) 10\n" + "M)1345" +
                 "F) 7/7/7 G) XX/XX/XX H) 40/1/35 SKL\n" +
                 "N) ALL REPORTED TWYS/2\n" +
                 "R) ALL REPORTED APRONS/2\n" +
@@ -59,17 +59,21 @@ public class Main {
                     String frictionMeasurements = getFrictionMeasurements(pair.getValue().toString().replace(" ",""));
                     System.out.println(frictionMeasurements);
                     break;
-                case 'I':
-
+                case 'J':
+                    String criticalSnowbanks = getCriticalSnowbanks(pair.getValue().toString().replace(" ",""));
+                    System.out.println(criticalSnowbanks);
                     break;
                 case 'K':
-
+                    String runwayLight = getRunwayLight(pair.getValue().toString().replace(" ",""));
+                    System.out.println(runwayLight);
                     break;
                 case 'L':
-
+                    String furtherClearance = getFurtherClearance(pair.getValue().toString().replace(" ",""));
+                    System.out.println(furtherClearance);
                     break;
                 case 'M':
-
+                    String furtherClearanceCompletionTime = getFurtherClearanceCompletionTime(pair.getValue().toString().replace(" ",""));
+                    System.out.println(furtherClearanceCompletionTime);
                     break;
                 case 'N':
 
@@ -233,5 +237,61 @@ public class Main {
         }
 
         return "BRAKING ACTION Threshold: " + numbers[0] + " / Mid runway: " + numbers[1] + " / Roll Out: " + numbers[2] + " Instrument: " + instrument;
+    }
+
+    public static String getCriticalSnowbanks(String data){
+        String[] tab = data.split("/");
+        String height = tab[0];
+        tab = tab[1].split("");
+
+        String distance = "";
+        String side = "";
+        int i = 0;
+        while(!(tab[i].equals("R") || tab[i].equals("L"))){
+            distance += tab[i];
+            i++;
+        }
+        if(tab.length - i == 2)
+            side = "LEFT AND RIGHT";
+        else if(tab[i].equals("L"))
+            side = "LEFT";
+        else if(tab[i].equals("R"))
+            side = "RIGHT";
+
+        return "CRITICAL SNOW BANK " + height + "cm / " + distance + "m " + side + " of Runway";
+
+
+    }
+
+    public static String getRunwayLight(String data){
+        data = data.substring(3,data.length());
+        String side = "";
+        if(data.length() == 1){
+            if(data.equals("L"))
+                side = "LEFT";
+            else if(data.equals("R"))
+                side = "RIGHT";
+        }
+        else
+            side = "LEFT AND RIGHT";
+
+        return "Lights obscured : YES " + side + " of RUNWAY";
+
+    }
+
+    public static String getFurtherClearance(String data){
+        if(data.equals("TOTAL"))
+            return "FURTHER CLEARANCE TOTAL";
+        else{
+            String[] HeightAndWidth = data.split("/");
+            return "FURTHER CLEARANCE " + HeightAndWidth[0] + "m / " + HeightAndWidth[1] + "m";
+        }
+    }
+
+    public static String getFurtherClearanceCompletionTime(String data){
+        String hh = data.substring(0,2);
+        String mm = data.substring(2,4);
+
+        return "Anticipated time of completion " + hh + "h" + mm + " UTC";
     }
 }
